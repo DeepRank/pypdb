@@ -823,10 +823,10 @@ def get_seq_cluster_percent(pdb_id_chain,percent=95):
         return None
 
     url_root = 'http://www.rcsb.org/pdb/rest/sequenceCluster?cluster=%s&structureId=' %str(percent)
-    out = pypdb.get_info(pdb_id_chain, url_root = url_root)
-    out = pypdb.to_dict(out)
+    out = get_info(pdb_id_chain, url_root = url_root)
+    out = to_dict(out)
     check = True
-    return pypdb.remove_at_sign(out['sequenceCluster']), check
+    return remove_at_sign(out['sequenceCluster']), check
 
 def get_blast(pdb_id, chain_id='A'):
     """
