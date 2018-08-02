@@ -790,6 +790,44 @@ def get_seq_cluster(pdb_id_chain):
     out = to_dict(out)
     return remove_at_sign(out['sequenceCluster'])
 
+def get_seq_cluster_percent(pdb_id_chain,percent=95):
+    """Get the sequence cluster of a PDB ID plus a pdb_id plus a chain,
+    Parameters
+    ----------
+    pdb_id_chain : string
+        A string denoting a 4 character PDB ID plus a one character chain
+        offset with a dot: XXXX.X, as in 2F5N.A
+    Returns
+    -------
+    out : dict
+        A dictionary containing the sequence cluster associated with the PDB
+        entry and chain
+    Examples
+    --------
+    >>> sclust = get_seq_cluster('2F5N.A')
+    >>> print(sclust['pdbChain'][:10])
+    [{'@name': '4PD2.A', '@rank': '1'},
+     {'@name': '3U6P.A', '@rank': '2'},
+     {'@name': '4PCZ.A', '@rank': '3'},
+     {'@name': '3GPU.A', '@rank': '4'},
+     {'@name': '3JR5.A', '@rank': '5'},
+     {'@name': '3SAU.A', '@rank': '6'},
+     {'@name': '3GQ4.A', '@rank': '7'},
+     {'@name': '1R2Z.A', '@rank': '8'},
+     {'@name': '3U6E.A', '@rank': '9'},
+     {'@name': '2XZF.A', '@rank': '10'}]
+    """
+
+    if percent not in [100,95,90,70,50,40,30]:
+        print('Error: percent must be either 100, 95, 90, 70, 50, 40 or 30')
+        return None
+
+    url_root = 'http://www.rcsb.org/pdb/rest/sequenceCluster?cluster=%s&structureId=' %str(percent)
+    out = pypdb.get_info(pdb_id_chain, url_root = url_root)
+    out = pypdb.to_dict(out)
+    check = True
+    return pypdb.remove_at_sign(out['sequenceCluster']), check
+
 def get_blast(pdb_id, chain_id='A'):
     """
     Return BLAST search results for a given PDB ID
