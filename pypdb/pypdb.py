@@ -115,7 +115,7 @@ def make_query(search_term, querytype='AdvancedKeywordQuery'):
     assert querytype in {'HoldingsQuery', 'ExpTypeQuery',
                          'AdvancedKeywordQuery','StructureIdQuery',
                          'ModifiedStructuresQuery', 'AdvancedAuthorQuery', 'MotifQuery',
-                         'NoLigandQuery', 'PubmedIdQuery'
+                         'NoLigandQuery', 'PubmedIdQuery', 'NumberOfEntitiesQuery'
                         }, 'Query type %s not supported yet' % querytype
 
     query_params = dict()
@@ -150,6 +150,17 @@ def make_query(search_term, querytype='AdvancedKeywordQuery'):
     elif querytype=='PubmedIdQuery':
         query_params['description'] = 'Pubmed Id Search for Pubmed Id '+ search_term
         query_params['pubMedIdList'] = search_term
+
+    elif querytype=='NumberOfEntitiesQuery':
+        assert isinstance(search_term,list) or isinstance(search_term,int), 'Search parameter must be [min, max] or num for NumberOfEntitiesQuery'
+        if isinstance(search_term,list):
+            assert len(search_term)==2         , 'Search parameter must be [min, max] for NumberOfEntitiesQuery'
+        else:
+            search_term = [search_term,search_term]
+        query_params['description'] = 'Number of Entities Search : Entity Type=Protein Min Number of Entities=%d Max Number of Entities=%d' %(search_term[0],search_term[1])
+        query_params['entity.type'] = 'p'
+        query_params['struct_asym.numEntities.min'] = str(search_term[0])
+        query_params['struct_asym.numEntities.max'] = str(search_term[1])
 
 
     scan_params = dict()
